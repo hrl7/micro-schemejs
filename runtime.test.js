@@ -17,3 +17,15 @@ it("operator +", () => {
     val: 15,
   });
 });
+
+it("variable", () => {
+  const env = createEnvironment();
+  expect(evaluate(parse(tokenize("(define x 123)")), env)).toEqual({
+    type: "IDENT",
+    name: "x",
+  });
+  expect(evaluate(parse(tokenize("(+ x 123)")), env)).toEqual({
+    type: "NUMBER",
+    val: 246,
+  });
+});

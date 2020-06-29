@@ -1,10 +1,12 @@
 const { Types } = require("./parser");
 
-const createNumber = (num) => ({ type: Types.NUMBER, val: num });
+const newNumber = (num) => ({ type: Types.NUMBER, val: num });
+const newIdent = (name) => ({ type: Types.IDENT, name });
+
 const createEnvironment = () => ({
   global: {
     "+": (args) =>
-      args.reduce((acc, n) => createNumber(acc.val + n.val), createNumber(0)),
+      args.reduce((acc, n) => newNumber(acc.val + n.val), newNumber(0)),
   },
 });
 
@@ -20,6 +22,15 @@ const evaluate = (ast, env) => {
       args.push(evaluate(operands[i], env));
     }
     return proc(args);
+  }
+  if (ast.type === Types.DEFINE_VAR) {
+    const value = evaluate(ast.body);
+    env.global[ast.name] = value;
+    return newIdent(ast.name);
+  }
+  if (ast.type === Types.IDENT) {
+    const value = lookup(ast.name, env);
+    return value;
   }
   if (ast.type === Types.NUMBER) {
     return ast;
