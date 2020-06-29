@@ -3,22 +3,30 @@ const Types = {
   RPAREN: "RPAREN",
   OPERATOR: "OPERATOR",
   NUMBER: "NUMBER",
+  DEFINE: "DEFINE",
+  IDENT: "IDENT",
 };
 
+const spaceRegex = /\s+/;
 function isSpace(c) {
-  return /\s+/.test(c);
+  return spaceRegex.test(c);
 }
+const digitRegex = /\d+/;
 function isDigit(c) {
-  return /\d+/.test(c);
+  return digitRegex.test(c);
+}
+const alnumRegex = /[0-9a-zA-Z?!]/;
+function isAlNum(c) {
+  return alnumRegex.test(c);
 }
 
 const LParenToken = { type: Types.LPAREN };
-Object.freeze(LParenToken);
 const RParenToken = { type: Types.RPAREN };
-Object.freeze(RParenToken);
+const DefineToken = { type: Types.DEFINE };
 
 const createOperator = (c) => ({ type: Types.OPERATOR, val: c });
 const createNumber = (c) => ({ type: Types.NUMBER, val: +c });
+const createIdentifier = (c) => ({ type: Types.IDENT, val: c });
 
 const tokenize = (source) => {
   let i = 0,
@@ -58,7 +66,34 @@ const tokenize = (source) => {
       c = source[++i];
     }
     i--;
-    tokens.push(createNumber(buf));
+    if (buf !== "") {
+      tokens.push(createNumber(buf));
+      continue;
+    }
+
+    buf = "";
+    while (isAlNum(c)) {
+      c = source[++i];
+      buf += c;
+    }
+    buf = buf.slice(0, -1);
+    i--;
+
+    if (buf !== "") {
+      switch (buf) {
+        case "define":
+          token = DefineToken;
+          break;
+        default:
+          token = createIdentifier(buf);
+      }
+    }
+    if (token) {
+      tokens.push(token);
+      continue;
+    }
+
+    throw new Error(`Unexpected token: ${c}`);
   }
 
   return tokens;

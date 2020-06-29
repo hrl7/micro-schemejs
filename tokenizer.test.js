@@ -42,3 +42,13 @@ it("(+ 1 2 3 456 78 9)", () => {
     { type: "RPAREN" },
   ]);
 });
+
+it("(define x 123)", () => {
+  expect(tokenize("(define x 123)")).toEqual([
+    { type: "LPAREN" },
+    { type: "DEFINE" },
+    { type: "IDENT", val: "x" },
+    { type: "NUMBER", val: 123 },
+    { type: "RPAREN" },
+  ]);
+});
