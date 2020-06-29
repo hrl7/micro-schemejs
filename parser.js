@@ -79,4 +79,5 @@ const parse = (tokens) => {
 
 module.exports = {
   parse: parse,
+  Types: Types,
 };
