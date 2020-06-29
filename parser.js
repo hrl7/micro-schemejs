@@ -41,11 +41,9 @@ const parse = (tokens) => {
       const operator = shift();
       const operands = [];
       let node = null;
-      while ((node = expr())) {
+      while (i < tokens.length && cur().type !== TokenTypes.RPAREN) {
+        node = expr();
         operands.push(node);
-        if (cur().type === TokenTypes.RPAREN) {
-          break;
-        }
       }
       if (!consume(TokenTypes.RPAREN)) {
         throw new Error(`expected ')', got ${JSON.stringify(cur())}`);
