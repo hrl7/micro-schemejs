@@ -5,6 +5,7 @@ const Types = {
   NUMBER: "NUMBER",
   DEFINE: "DEFINE",
   IDENT: "IDENT",
+  LAMBDA: "LAMBDA",
 };
 
 const spaceRegex = /\s+/;
@@ -23,6 +24,7 @@ function isAlNum(c) {
 const LParenToken = { type: Types.LPAREN };
 const RParenToken = { type: Types.RPAREN };
 const DefineToken = { type: Types.DEFINE };
+const LambdaToken = { type: Types.LAMBDA };
 
 const createOperator = (c) => ({ type: Types.OPERATOR, val: c });
 const createNumber = (c) => ({ type: Types.NUMBER, val: +c });
@@ -83,6 +85,9 @@ const tokenize = (source) => {
       switch (buf) {
         case "define":
           token = DefineToken;
+          break;
+        case "lambda":
+          token = LambdaToken;
           break;
         default:
           token = createIdentifier(buf);

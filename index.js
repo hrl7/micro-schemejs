@@ -1,4 +1,4 @@
-const { parse } = require("./parser");
+const { parse, Types } = require("./parser");
 const { tokenize } = require("./tokenizer");
 const { evaluate, createEnvironment } = require("./runtime");
 
@@ -12,7 +12,9 @@ process.stdin.on("readable", () => {
       const tokens = tokenize(chunk);
       const ast = parse(tokens);
       const result = evaluate(ast, env);
-      process.stdout.write(JSON.stringify(result.val));
+      if (result) {
+        process.stdout.write(display(result));
+      }
     } catch (e) {
       console.log(e);
     }
@@ -23,3 +25,17 @@ process.stdin.on("readable", () => {
 process.stdin.on("end", () => {
   process.stdout.write("good bye!\n");
 });
+
+const display = (node) => {
+  if (typeof node === "function") {
+    return "<closure>";
+  }
+  switch (node.type) {
+    case Types.IDENT:
+      return node.name;
+    case Types.NUMBER:
+      return String(node.val);
+    default:
+      return `${JSON.stringify(node)} not implemented yet`;
+  }
+};

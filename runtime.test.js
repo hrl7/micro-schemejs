@@ -29,3 +29,11 @@ it("variable", () => {
     val: 246,
   });
 });
+
+it("lambda", () => {
+  const env = createEnvironment();
+  expect(evaluate(parse(tokenize("((lambda (x) (+ x x)) 3)")), env)).toEqual({
+    type: "NUMBER",
+    val: 6,
+  });
+});
