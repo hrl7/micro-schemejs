@@ -37,3 +37,18 @@ it("lambda", () => {
     val: 6,
   });
 });
+
+it("program", () => {
+  const env = createEnvironment();
+  const source = `
+    (define twice
+      (lambda (x) (+ x x)))
+    (twice (twice 4))
+    (define x 9)
+    (twice x)
+  `;
+  expect(evaluate(parse(tokenize(source)), env)).toEqual({
+    type: "NUMBER",
+    val: 18,
+  });
+});

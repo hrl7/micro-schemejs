@@ -120,7 +120,11 @@ const parse = (tokens) => {
     throw new Error(`expected number or ident, got ${JSON.stringify(cur())}`);
   };
 
-  return expr();
+  const program = [];
+  while (i < tokens.length) {
+    program.push(expr());
+  }
+  return program;
 };
 
 module.exports = {
